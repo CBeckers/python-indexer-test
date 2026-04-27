@@ -1,26 +1,35 @@
-# ── LLM backend ──────────────────────────────────────────────────────────────
-# "ollama"  → fully local, no API key needed (install Ollama first)
-# "openai"  → OpenAI cloud API (set OPENAI_API_KEY env var or paste key below)
-LLM_BACKEND = "ollama"
+"""
+All settings are loaded from .env (never hardcoded here).
+Copy .env.example → .env and fill in your values.
+"""
 
-# Ollama settings (https://ollama.com — run: ollama pull llama3.2)
-OLLAMA_MODEL = "llama3.2"
-OLLAMA_BASE_URL = "http://localhost:11434"
+import os
+from dotenv import load_dotenv
 
-# OpenAI settings (only used when LLM_BACKEND = "openai")
-OPENAI_API_KEY = ""   # leave blank to read from OPENAI_API_KEY env var instead
-OPENAI_MODEL = "gpt-4o-mini"
+load_dotenv()
+
+
+def _get(key: str, default: str) -> str:
+    return os.getenv(key) or default
+
+
+def _get_int(key: str, default: int) -> int:
+    return int(os.getenv(key) or default)
+
+
+# ── Claude ────────────────────────────────────────────────────────────────────
+CLAUDE_MODEL = _get("CLAUDE_MODEL", "claude-3-5-sonnet-20241022")
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-DOCS_DIR = "docs"       # drop your PDFs / DOCX / Markdown files here
-DB_DIR = "chroma_db"    # ChromaDB persists here (auto-created)
+DOCS_DIR = _get("DOCS_DIR", "docs")
+DB_DIR = _get("DB_DIR", "chroma_db")
 
 # ── Chunking ──────────────────────────────────────────────────────────────────
-CHUNK_SIZE = 800        # characters per chunk
-CHUNK_OVERLAP = 100     # characters of overlap between consecutive chunks
+CHUNK_SIZE = _get_int("CHUNK_SIZE", 800)
+CHUNK_OVERLAP = _get_int("CHUNK_OVERLAP", 100)
 
 # ── Retrieval ─────────────────────────────────────────────────────────────────
-TOP_K = 5               # number of chunks to retrieve per query
+TOP_K = _get_int("TOP_K", 5)
 
-# ── Embedding model (runs locally on CPU, no API needed) ──────────────────────
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"   # ~90 MB, fast, good quality
+# ── Embedding model (runs locally, no API needed) ─────────────────────────────
+EMBEDDING_MODEL = _get("EMBEDDING_MODEL", "all-MiniLM-L6-v2")

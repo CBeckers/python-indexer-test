@@ -1,0 +1,18 @@
+# Your documents — keep private
+docs/
+
+# ChromaDB vector index — contains chunks of your private docs
+chroma_db/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Environment variable files — never commit these
+.env
+.env.*
+!.env.example
